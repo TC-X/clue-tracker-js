@@ -33,6 +33,92 @@
     getSessionId: function () {
       return localStorage.getItem('sessionId') || this.generateUUID()
     },
+
+    getUserConsent: function () {
+      return localStorage.getItem('ctmConsent') === 'true'
+    },
+
+    setUserConsent: function (consent) {
+      localStorage.setItem('ctmConsent', consent.toString())
+    },
+
+    showConsentBanner: function () {
+      // Implement a user-friendly consent banner
+      const style = document.createElement('style')
+      style.innerHTML = `
+        .ctm-consent-banner {
+          margin: 24px;
+          position: fixed;
+          max-width: 600px;
+          bottom: 0;
+          left: 0;
+          border-radius: 16px;
+          box-shadow: 0 0 8px rgba(0, 0, 0, 0.01);
+          overflow: hidden;
+        }
+
+        .ctm-consent-banner .container {
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+          padding: 24px;
+          background: #fff;
+        }
+
+        .ctm-consent-banner .button-wrapper {
+          display: flex;
+          gap: 8px;
+        }
+
+        .ctm-consent-banner .button {
+          font-weight: bold;
+          padding: 8px 16px;
+          border-radius: 8px;
+          transition: opacity 0.3s;
+        }
+
+        .ctm-consent-banner .button.accept {
+          background: #000;
+          color: #fff;
+        }
+
+        .ctm-consent-banner .button:hover {
+          opacity: 0.6;
+        }
+      `
+      const banner = document.createElement('div')
+      banner.classList.add('ctm-consent-banner')
+      banner.innerHTML = `
+      <div class="container">
+        <p>We use cookies and similar technologies to improve your browsing experience and personalize content. 
+        By continuing to use our site, you agree to our use of cookies. To learn more, please read our Privacy Policy.</p>
+        <div class="button-wrapper">
+        <button id="accept-consent" class="button accept">Accept</button>
+          <button id="decline-consent" class="button decline">Decline</button>
+        </div>
+      </div>
+      `
+
+      banner.prepend(style)
+      document.body.appendChild(banner)
+
+      document
+        .getElementById('accept-consent')
+        .addEventListener('click', () => {
+          console.log('User accepted consent')
+          this.setUserConsent(true)
+          banner.remove()
+          initializeTracker()
+        })
+
+      document
+        .getElementById('decline-consent')
+        .addEventListener('click', () => {
+          console.log('User declined consent')
+          this.setUserConsent(false)
+          banner.remove()
+        })
+    },
   }
 
   // Tracking modules
@@ -548,7 +634,15 @@
 
   // Tracker initialization
   const Tracker = {
+    enabledModules: {},
     init: function (modules) {
+      if (!utils.getUserConsent()) {
+        console.warn('ctm.js: User has not given consent')
+        utils.showConsentBanner()
+        return
+      }
+
+      this.enabledModules = modules
       Object.keys(modules).forEach((module) => {
         if (trackingModules[module] && modules[module]) {
           trackingModules[module]().init()
@@ -557,26 +651,37 @@
     },
   }
 
-  // Usage example:
-  Tracker.init({
-    pageView: true,
-    click: true,
-    scroll: true,
-    timeOnPage: true,
-    formInteractions: true,
-    pageLoadTime: true,
-    userIdle: true,
-    copyEvent: true,
-    exitIntent: true,
-    resources: true,
-    mouseMovement: true,
-    mouseHover: true,
-    userInput: true,
-    pageVisibility: true,
-    screenOrientation: true,
-    networkStatus: true,
-    keyboardShortcuts: true,
-  })
+  function initializeTracker() {
+    Tracker.init({
+      pageView: true,
+      click: true,
+      scroll: true,
+      timeOnPage: true,
+      formInteractions: true,
+      pageLoadTime: true,
+      userIdle: true,
+      copyEvent: true,
+      exitIntent: true,
+      resources: true,
+      mouseMovement: true,
+      mouseHover: true,
+      userInput: true,
+      pageVisibility: true,
+      screenOrientation: true,
+      networkStatus: true,
+      keyboardShortcuts: true,
+    })
+
+    console.log('ctm.js: Tracker initialized')
+  }
+
+  // Check for existing consent and initialize if present
+  if (utils.getUserConsent()) {
+    initializeTracker()
+  } else {
+    console.log('ctm.js: User has not given consent')
+    utils.showConsentBanner()
+  }
 
   // Make Tracker available globally
   window.Tracker = Tracker
