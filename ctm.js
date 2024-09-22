@@ -91,7 +91,7 @@
       banner.innerHTML = `
       <div class="container">
         <p>We use cookies and similar technologies to improve your browsing experience and personalize content. 
-        By continuing to use our site, you agree to our use of cookies. To learn more, please read our Privacy Policy.</p>
+        By continuing to use our site, you agree to our use of cookies.</p>
         <div class="button-wrapper">
         <button id="accept-consent" class="button accept">Accept</button>
           <button id="decline-consent" class="button decline">Decline</button>
