@@ -53,7 +53,7 @@
           bottom: 0;
           left: 0;
           border-radius: 16px;
-          box-shadow: 0 0 8px rgba(0, 0, 0, 0.01);
+          box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
           overflow: hidden;
         }
 
