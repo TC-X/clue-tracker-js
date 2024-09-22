@@ -655,7 +655,7 @@
     Tracker.init({
       pageView: true,
       click: true,
-      scroll: true,
+      // scroll: true,
       timeOnPage: true,
       formInteractions: true,
       pageLoadTime: true,
