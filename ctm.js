@@ -51,7 +51,7 @@
           position: fixed;
           max-width: 600px;
           bottom: 0;
-          left: 0;
+          right: 0;
           border-radius: 16px;
           box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
           overflow: hidden;
@@ -68,16 +68,17 @@
         .ctm-consent-banner .button-wrapper {
           display: flex;
           gap: 8px;
+          margin-left: auto;
         }
 
         .ctm-consent-banner .button {
-          font-weight: bold;
           padding: 8px 16px;
           border-radius: 8px;
           transition: opacity 0.3s;
         }
 
         .ctm-consent-banner .button.accept {
+          font-weight: bold;
           background: #000;
           color: #fff;
         }
@@ -90,11 +91,12 @@
       banner.classList.add('ctm-consent-banner')
       banner.innerHTML = `
       <div class="container">
-        <p>We use cookies and similar technologies to improve your browsing experience and personalize content. 
-        By continuing to use our site, you agree to our use of cookies.</p>
+        <p>Our website uses cookies and similar technologies to enhance 
+        your browsing experience. By continuing to browse, you agree to 
+        our cookie policy and help us improve our services.</p>
         <div class="button-wrapper">
-        <button id="accept-consent" class="button accept">Accept</button>
           <button id="decline-consent" class="button decline">Decline</button>
+          <button id="accept-consent" class="button accept">Accept</button>
         </div>
       </div>
       `
